@@ -34,11 +34,14 @@ public class Game
         office = new Room("na sala dos professores");
         
         // initialise room exits
-        outside.setExits(null, theatre, lab, pub);
-        theatre.setExits(null, null, null, outside);
-        pub.setExits(null, outside, null, null);
-        lab.setExits(outside, office, null, null);
-        office.setExits(null, null, null, lab);
+        outside.setExit("sul", lab); //correto com hashmap
+        outside.setExit("leste", theatre);
+        outside.setExit("oeste", pub);
+        theatre.setExit("oeste", outside);
+        pub.setExit("leste", outside);
+        lab.setExit("leste", office);
+        lab.setExit("norte", outside);
+        office.setExit("oeste", lab);
 
         currentRoom = outside;  // Começa o jogo fora 
     }
@@ -71,21 +74,7 @@ public class Game
         System.out.println("Mundo de Zuul é um jogo de aventura, incrivelmente chato.");
         System.out.println("Digite 'ajuda' se você precisar de ajuda.");
         System.out.println();
-        System.out.println("Você está " + currentRoom.getDescription());
-        System.out.print("Saídas: ");
-        if(currentRoom.northExit != null) {
-            System.out.print("norte ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("leste ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("sul ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("oeste ");
-        }
-        System.out.println();
+        printLocationInfo();
     }
 
     /**
@@ -117,7 +106,7 @@ public class Game
 
     /**
      * Imprime informações de ajuda.
-     * Aqui imprimimos ua mensagem estúpida e listamos os comandos
+     * Aqui imprimimos uma mensagem estúpida e listamos os comandos
      * disponíveis.
      */
     private void printHelp() 
@@ -144,41 +133,21 @@ public class Game
         String direction = command.getSecondWord();
 
         // Try to leave current room.
-        Room nextRoom = null;
-        if(direction.equals("norte")) {
-            nextRoom = currentRoom.northExit;
-        }
-        if(direction.equals("leste")) {
-            nextRoom = currentRoom.eastExit;
-        }
-        if(direction.equals("sul")) {
-            nextRoom = currentRoom.southExit;
-        }
-        if(direction.equals("oeste")) {
-            nextRoom = currentRoom.westExit;
-        }
+        Room nextRoom = currentRoom.getExit(direction);
 
         if (nextRoom == null) {
             System.out.println("Não há uma porta!");
         }
         else {
             currentRoom = nextRoom;
-            System.out.println("Você está " + currentRoom.getDescription());
-            System.out.print("Saídas: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("norte ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("leste ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("sul ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("oeste ");
-            }
-            System.out.println();
+            printLocationInfo();
         }
+    }
+
+    private void printLocationInfo() {
+        System.out.println("Você está " + currentRoom.getDescription());
+        System.out.print(currentRoom.getExitString());
+        System.out.println();
     }
 
     /** 

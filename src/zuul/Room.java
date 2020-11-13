@@ -1,5 +1,7 @@
 package zuul;
 
+import java.util.HashMap;
+
 /**
  * Class Room - a room in an adventure game.
  *
@@ -16,46 +18,36 @@ package zuul;
  */
 public class Room 
 {
-    public String description;
-    public Room northExit;
-    public Room southExit;
-    public Room eastExit;
-    public Room westExit;
+    private String description;
+    private HashMap<String, Room> exits;
+
+    public Room(String description)
+    {
+        this.description = description;
+        exits = new HashMap<>();
+    }
+
+    public Room getExit(String direction) {
+        return exits.get(direction);
+    }
+    public String getExitString(){
+        String exitString = "Saídas: ";
+        for(String exit : exits.keySet()){
+            exitString += " " + exit;
+        }
+        return exitString;
+    }
 
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
      * "an open court yard".
-     * @param description The room's description.
+     * @param neighbor The room's description.
      */
-    public Room(String description) 
-    {
-        this.description = description;
+    public void setExit(String direction, Room neighbor){
+        exits.put(direction, neighbor);
     }
 
-    /**
-     * Define the exits of this room.  Every direction either leads
-     * to another room or is null (no exit there).
-     * @param north The north exit.
-     * @param east The east east.
-     * @param south The south exit.
-     * @param west The west exit.
-     */
-    public void setExits(Room north, Room east, Room south, Room west) 
-    {
-        if(north != null)
-            northExit = north;
-        if(east != null)
-            eastExit = east;
-        if(south != null)
-            southExit = south;
-        if(west != null)
-            westExit = west;
-    }
-
-    /**
-     * @return The description of the room.
-     */
     public String getDescription()
     {
         return description;
